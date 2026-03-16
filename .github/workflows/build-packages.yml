@@ -51,7 +51,6 @@ jobs:
           - x86_64
         tag:
           - openwrt-24.10
-          - openwrt-25.12
 
     steps:
       - name: Free disk space
