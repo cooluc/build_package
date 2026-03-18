@@ -62,23 +62,22 @@ jobs:
           name: ${{ env.ARCH }}
           path: ${{ env.ARCH }}.tar.gz
 
-      - name: Upload FTP (lftp)
+      - name: Upload files to FTP
         if: ${{ env.SKIP_BUILD == '0' }}
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y lftp
-          lftp -e "
-            set ftp:ssl-allow no;
-            mirror --reverse \
-                   --only-newer \
-                   --verbose \
-                   --no-perms \
-                   --exclude-glob .git* \
-                   bin/packages/${{ env.EFFECTIVE_ARCH }}/packages_ci/ \
-                   ${{ matrix.tag }}/${{ env.EFFECTIVE_ARCH }}/;
-            bye
-          " -u "${{ secrets.ftp_username }},${{ secrets.ftp_password }}" ${{ secrets.ftp_address }}
-
+        uses: matteodf/lftp-upload@v1
+        with:
+          host: ${{ secrets.ftp_address }}
+          username: ${{ secrets.ftp_username }}
+          password: ${{ secrets.ftp_password }}
+          forceSsl: "false"
+          localDir: bin/packages/${{ env.EFFECTIVE_ARCH }}/packages_ci/
+          remoteDir: ${{ matrix.tag }}/${{ env.EFFECTIVE_ARCH }}/
+          timeout: "120"
+          retries: "5"
+          multiplier: "2.0"
+          baseInterval: "10"
+          pConn: "10"
+          extraFlags: "--reverse --only-newer --no-perms --verbose"
 
       - name: Create metadata (ipk)
         if: ${{ env.SKIP_BUILD == '0' && matrix.tag == 'openwrt-24.10' }}
