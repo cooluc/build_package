@@ -59,7 +59,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v6
         with:
-          name: ${{ matrix.model }}-${{ matrix.tag.version }}
+          name: ${{ env.ARCH }}
           path: ${{ env.ARCH }}.tar.gz
 
       - name: Upload FTP (lftp)
