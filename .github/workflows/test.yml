@@ -35,12 +35,6 @@ jobs:
             echo "ARCH=${{ matrix.arch }}-${{ matrix.tag }}" >> $GITHUB_ENV
           fi
 
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v6
-        with:
-          name: ${{ env.ARCH }}
-          path: ${{ env.ARCH }}.tar.gz
-
       - name: Upload files to FTP
         if: ${{ env.SKIP_BUILD == '0' }}
         uses: matteodf/lftp-upload@v1
