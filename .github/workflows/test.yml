@@ -64,15 +64,19 @@ jobs:
 
       - name: Upload files to FTP
         if: ${{ env.SKIP_BUILD == '0' }}
-        uses: pontago/lftp-deploy-action@master
+        uses: matteodf/lftp-upload@v1
         with:
-          protocol: ftp
           host: ${{ secrets.ftp_address }}
           username: ${{ secrets.ftp_username }}
           password: ${{ secrets.ftp_password }}
-          verify_cert: "false"
-          local_dir: bin/packages/${{ env.EFFECTIVE_ARCH }}/packages_ci/
-          remote_dir: ${{ matrix.tag }}/${{ env.EFFECTIVE_ARCH }}/
+          forceSsl: "false"
+          localDir: bin/packages/${{ env.EFFECTIVE_ARCH }}/packages_ci/
+          remoteDir: ${{ matrix.tag }}/${{ env.EFFECTIVE_ARCH }}/
+          timeout: "120"
+          retries: "5"
+          multiplier: "2.0"
+          baseInterval: "10"
+          pConn: "10"
 
       - name: Create metadata (ipk)
         if: ${{ env.SKIP_BUILD == '0' && matrix.tag == 'openwrt-24.10' }}
