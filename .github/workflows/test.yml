@@ -77,7 +77,7 @@ jobs:
           multiplier: "2.0"
           baseInterval: "10"
           pConn: "10"
-          extraFlags: "--reverse --only-newer --no-perms --verbose"
+          extraFlags: "--verbose"
 
       - name: Create metadata (ipk)
         if: ${{ env.SKIP_BUILD == '0' && matrix.tag == 'openwrt-24.10' }}
